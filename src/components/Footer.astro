@@ -1,0 +1,76 @@
+---
+import { Image } from "astro:assets";
+import FutureLink from "./FutureLink.astro";
+import logoLight from "../assets/logo-light.png";
+import { clinic, directions, NOTE } from "../data/clinic";
+---
+<footer class="footer on-dark">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <a href="#top" class="footer__logo" aria-label="LIUKHNYCH dental clinic, на початок сторінки">
+        <Image src={logoLight} alt="" width={180} densities={[1, 2]} format="webp" loading="lazy" />
+      </a>
+      <p class="small footer__muted">Стоматологія повного циклу в Івано-Франківську.</p>
+    </div>
+    <nav class="footer__col footer__col--wide" aria-label="Напрями">
+      <h2 class="footer__label">Напрями</h2>
+      <ul class="footer__dirs">
+        {directions.map((d) => <li><FutureLink note={NOTE}>{d}</FutureLink></li>)}
+      </ul>
+    </nav>
+    <div class="footer__col footer__col--contacts">
+      <h2 class="footer__label">Контакти</h2>
+      <p><a class="footer__phone num" href={clinic.phoneHref}>{clinic.phoneDisplay}</a></p>
+      <p class="small">{clinic.street}, м.&nbsp;{clinic.city}</p>
+      <dl class="small footer__hours">
+        {clinic.hours.map((h) => <div><dt>{h.days}</dt><dd>{h.time}</dd></div>)}
+      </dl>
+      <ul class="footer__socials small">
+        {clinic.socials.map((s) => <li><a class="link" href={s.href} target="_blank" rel="noopener">{s.name}</a></li>)}
+      </ul>
+    </div>
+    <div class="footer__col footer__col--docs">
+      <h2 class="footer__label">Документи</h2>
+      <ul class="small">
+        <li><FutureLink note={NOTE}>Публічний договір</FutureLink></li>
+        <li><FutureLink note={NOTE}>Політика конфіденційності</FutureLink></li>
+      </ul>
+    </div>
+    <p class="footer__copy small footer__muted">© 2026 LIUKHNYCH dental clinic</p>
+  </div>
+</footer>
+
+<style>
+  .footer { padding-block: var(--s-8) var(--s-6); }
+  .footer__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+  .footer__logo { display: inline-flex; }
+  .footer__logo :global(img) { width: 180px; height: auto; }
+  .footer__brand { display: grid; gap: var(--s-4); align-content: start; }
+  .footer__muted { color: var(--color-on-dark-muted); }
+  .footer__label { font: 600 var(--fs-small)/1.4 var(--font-body); letter-spacing: 0; color: var(--color-on-dark-muted); margin-bottom: var(--s-3); }
+  .footer__col { display: grid; gap: var(--s-2); align-content: start; }
+  .footer__dirs { display: grid; grid-template-columns: minmax(0, 1fr); font-size: var(--fs-small); }
+  .footer__phone { display: inline-flex; align-items: center; min-height: 2.75rem; font-size: 1.25rem; font-weight: 600; text-decoration: none; }
+  .footer__phone:hover { text-decoration: underline; }
+  .footer__hours div { display: flex; gap: var(--s-3); }
+  .footer__hours dt { min-width: 3.5rem; }
+  .footer__socials { display: flex; flex-wrap: wrap; column-gap: var(--s-4); }
+  .footer__socials a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+  .footer__copy { padding-top: var(--s-5); border-top: 1px solid var(--color-dark-line); }
+
+  @media (min-width: 600px) { .footer__dirs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-5); } }
+  @media (min-width: 1024px) {
+    .footer__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); }
+    .footer__brand { grid-column: 1 / 5; grid-row: 1 / span 2; }
+    .footer__col--wide { grid-column: 5 / 9; grid-row: 1 / span 2; }
+    .footer__col--contacts { grid-column: 9 / -1; }
+    .footer__col--docs { grid-column: 9 / -1; }
+    .footer__copy { grid-column: 1 / -1; }
+  }
+  @media (min-width: 1280px) {
+    .footer__brand { grid-column: 1 / 4; grid-row: auto; }
+    .footer__col--wide { grid-column: 4 / 8; grid-row: auto; }
+    .footer__col--contacts { grid-column: 8 / 11; }
+    .footer__col--docs { grid-column: 11 / -1; }
+  }
+</style>

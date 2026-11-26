@@ -1,0 +1,75 @@
+/* Hallmark · shape: offer + oak reception panel, slat wall of prices, doctors, dark pause, clinic photos, oak contacts · genre: editorial · theme: custom · job: book · idea: "Главная построена из материалов клиники на Целевича, 4: белые ламели — ритм, дуб — связь с клиникой, чёрный — точные факты" · vibe: "спокійна, точна, тепла, без глянцю"
+ * paper: #FAFAF8 · accent: #C8935A (oak, role: contact) · display: Fixel Display · body: Fixel Text · hero: предложение слева, дубовая панель-ресепшен с телефоном справа, широкое фото ресепшена под заголовком; на 390 — текст и дубовая панель, фото ниже сгиба · nav: липкая светлая шапка + нижняя дубовая панель 390 · footer: тёмный, колонки, без гигантского знака · imagery: client photos · signature: дуб = звонок; услуги-ламели с ценами
+ * axes: light/grotesk/warm · posture: committed · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: E (expression), the slat wall and the opening slats over the reception photo carry it; no decoration added */
+/* Hallmark · answered F4 · oak is the call on paper and on ink, ink is the call on the oak panel; concept «Кнопки» gives each surface one filled call and never two side by side */
+/* Hallmark · waive 39b · a.btn 56px · concept §8.6 and «Кнопки»: the clinic call button is 56px on purpose, a large thumb target for a patient in pain on a phone; header call stays 44px */
+/* Hallmark · waive 44c · oak panel 166px from the text, flush to the right edge · concept §8.6: the oak column is the reception wall panel running from header to fold, and the reception photo sits under the headline, not beside it */
+/* Hallmark · answered F25 · on phones the six service rows keep situation and first price visible and open the rest on tap, concept §8.7; nothing is removed */
+/* Line 1 of this file is the Hallmark stamp (docs/process/hallmark.md), filled from design/concept.md. */
+
+/* Fixel Display / Fixel Text — MacPaw, SIL OFL 1.1 (public/fonts/OFL.txt). Subset: Latin + Cyrillic (incl. і ї є ґ ’), woff2. */
+@font-face { font-family: "Fixel Display"; src: url("/fonts/FixelDisplay-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Fixel Display"; src: url("/fonts/FixelDisplay-SemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Fixel Text"; src: url("/fonts/FixelText-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Fixel Text"; src: url("/fonts/FixelText-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Fixel Text"; src: url("/fonts/FixelText-SemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+/* Metric fallback: keeps line boxes close to Fixel while the woff2 loads (CLS). */
+@font-face { font-family: "Fixel Fallback"; src: local("Arial"), local("Helvetica Neue"), local("Roboto"); size-adjust: 104%; ascent-override: 87%; descent-override: 18%; line-gap-override: 0%; }
+
+:root {
+  /* Colour — design/concept.md §8.3 */
+  --color-bg: #FAFAF8;            /* paper: white walls and slats */
+  --color-surface: #EFEEEA;       /* slat shadow: services background */
+  --color-text: #1A1816;          /* ink: leather sofa, logo disc, facts */
+  --color-text-muted: #5C5853;
+  --color-oak: #C8935A;           /* only contact: call, route, contacts, bottom bar */
+  --color-oak-hover: #B9844C;     /* one step darker, ink on it 5.45 */
+  --color-oak-light: #D4A26C;     /* hover of oak buttons on ink, ink on it 7.74 */
+  --color-accent: #8A5528;        /* oak-deep: links and focus on light */
+  --color-line: #D9D6D0;
+  --color-on-dark: #FAFAF8;
+  --color-on-dark-muted: #B9B4AD;
+  --color-ink-hover: #2E2A26;     /* hover of ink buttons, paper on it 13.6 */
+  --color-ink-line: color-mix(in srgb, var(--color-text) 22%, transparent);
+  --color-dark-line: color-mix(in srgb, var(--color-on-dark) 18%, transparent);
+
+  /* Type — §8.4 */
+  --font-display: "Fixel Display", "Fixel Fallback", system-ui, sans-serif;
+  --font-body: "Fixel Text", "Fixel Fallback", system-ui, sans-serif;
+  --fs-h1: clamp(1.75rem, 0.82rem + 4.4vw, 4.75rem);   /* 76 / 31 */
+  --fs-hero-num: clamp(2.75rem, 1.6rem + 4.8vw, 6rem); /* 96 / 56-ish */
+  --fs-h2: clamp(1.75rem, 1.2rem + 2.2vw, 3rem);       /* 48 / 30 */
+  --fs-h3: clamp(1.375rem, 1.2rem + 0.55vw, 1.75rem);  /* 28 / 22 */
+  --fs-body: clamp(1.0625rem, 1.03rem + 0.12vw, 1.125rem); /* 18 / 17 */
+  --fs-small: 0.9375rem;                               /* 15 */
+  --lh-tight: 1.02;
+  --lh-head: 1.1;
+  --lh-body: 1.55;
+
+  /* Space — rhythm 4/8 */
+  --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem; --s-5: 1.5rem; --s-6: 2rem;
+  --s-7: 3rem; --s-8: 4rem; --s-9: 6rem; --s-10: 8rem;
+  --section-y: clamp(4.5rem, 2.5rem + 6vw, 8rem);      /* 128 / 72 */
+  --pad: clamp(1.25rem, 0.2rem + 4.4vw, 4rem);         /* side fields 64 / 20 */
+  --gap: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);         /* gutter 24 / 12 */
+  --container: 1312px;
+  --space: var(--pad);
+  --col: calc((var(--container) - 11 * var(--gap)) / 12);
+
+  /* Shape */
+  --radius: 4px;
+  --header-h: 4rem;
+  --btn-h: 3.5rem;
+  --btn-h-sm: 2.75rem;
+  --ring: 3px;
+
+  /* Motion — §8.11 */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-in: cubic-bezier(.4, 0, 1, 1);
+  --dur: 500ms;
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+}
+@media (min-width: 1024px) { :root { --header-h: 4.5rem; } }

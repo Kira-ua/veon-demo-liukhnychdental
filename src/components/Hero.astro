@@ -1,0 +1,125 @@
+---
+import { getImage } from "astro:assets";
+import Icon from "./Icon.astro";
+import wide from "../assets/reception-wide.jpg";
+import square from "../assets/reception-4x3.jpg";
+import { clinic, price } from "../data/clinic";
+
+// Art direction: 16:7 above 1024 (LCP candidate), 4:3 below the fold on phones.
+const wideSet = await Promise.all([640, 960, 1440, 1920].map((w) => getImage({ src: wide, width: w, format: "webp", quality: 78 })));
+const squareSet = await Promise.all([480, 780, 1080].map((w) => getImage({ src: square, width: w, format: "webp", quality: 76 })));
+const srcset = (set: { src: string; attributes: Record<string, unknown> }[]) => set.map((i) => `${i.src} ${i.attributes.width}w`).join(", ");
+const fallback = wideSet[2]!;
+---
+<section id="hero" class="hero" data-rec="U-R001,U-R011,P-R001,SEO-R001,SEO-R002">
+  <div class="hero__grid">
+    <div class="hero__text">
+      <h1>Лікуємо зуби в <span class="nowrap">Івано-Франківську:</span> від гострого болю до імплантів</h1>
+      <p class="lead hero__lead">
+        Стоматологія повного циклу на {clinic.street}.<span class="hero__lead-more"> Ціни «від» тут, на сторінці; план лікування складаємо на першій консультації.</span>
+      </p>
+      <p class="small muted hero__rating">Рейтинг {clinic.rating.value} у Google, понад {clinic.rating.reviews} відгуків</p>
+    </div>
+
+    <aside class="hero__panel on-oak" aria-label="Запис телефоном" data-rec="U-R004,U-R005">
+      <div class="hero__panel-top">
+        <p class="small">Запис телефоном</p>
+        <a class="hero__phone num" href={clinic.phoneHref}>{clinic.phoneDisplay}</a>
+        <a class="btn btn--ink btn--block" href={clinic.phoneHref}><Icon name="phone" />Подзвонити</a>
+        <a class="route" href={clinic.mapUrl} target="_blank" rel="noopener"><Icon name="pin" />Маршрут до клініки</a>
+      </div>
+      <div class="hero__panel-bottom">
+        <dl class="hours small">
+          {clinic.hours.map((h) => <div><dt>{h.days}</dt><dd>{h.time}</dd></div>)}
+        </dl>
+        <p class="hero__pain">Гострий біль? Зняття болю — від&nbsp;<span class="num">{price("1000")}</span></p>
+        <p class="small hero__address">{clinic.street}</p>
+      </div>
+    </aside>
+
+    <figure class="hero__photo photo" data-slats data-rec="P-R002">
+      <picture>
+        <source media="(min-width: 1024px)" srcset={srcset(wideSet)} sizes="(min-width: 1440px) 1000px, 70vw" type="image/webp" />
+        <source srcset={srcset(squareSet)} sizes="100vw" type="image/webp" />
+        <img src={fallback.src} width="1920" height="840" alt="Рецепція клініки: логотип на дубовій панелі, білі ламелі стін і чорний шкіряний диван" fetchpriority="high" decoding="async" />
+      </picture>
+      <span class="slats" aria-hidden="true">{[0, 1, 2, 3, 4, 5].map((i) => <span style={`--i:${i}`}></span>)}</span>
+    </figure>
+  </div>
+</section>
+
+<style>
+  /* Phone first: text, full-bleed oak panel, photo 4:3 under the fold */
+  .hero__grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .hero__text { padding: var(--s-5) var(--pad) var(--s-5); display: grid; gap: var(--s-3); }
+  .hero__lead-more { display: none; }
+  .hero__rating { margin-top: var(--s-1); }
+
+  .hero__panel { padding: var(--s-5) var(--pad); display: grid; gap: var(--s-4); }
+  .hero__panel-top { display: grid; gap: var(--s-2); }
+  .hero__phone { font-size: 1.375rem; font-weight: 600; line-height: 1.15; text-decoration: none; white-space: nowrap; justify-self: start; display: inline-flex; min-height: 2.75rem; align-items: center; }
+  .hero__phone:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .2em; }
+  .hero__panel .btn { margin-top: var(--s-2); }
+  .hero__panel .route { justify-self: start; }
+  .hero__panel-bottom { display: grid; gap: var(--s-3); }
+  .hours { display: flex; flex-wrap: wrap; column-gap: var(--s-4); row-gap: 0; }
+  .hours div { display: flex; gap: var(--s-2); }
+  .hours dt { font-weight: 600; }
+  .hero__pain { font: 600 1.25rem/1.2 var(--font-display); padding-top: var(--s-4); border-top: 1px solid var(--color-ink-line); }
+  .hero__address { display: none; }
+
+  .hero__photo { aspect-ratio: 4 / 3; }
+  .hero__photo img { object-position: 40% 40%; }
+
+  @media (min-width: 768px) {
+    .hero__text { padding-top: var(--s-7); padding-bottom: var(--s-6); }
+    .hero__panel { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-6); }
+    .hero__photo { aspect-ratio: 16 / 9; }
+  }
+
+  /* Desktop: breakout grid. Text cols 1–8, oak column 10–12 down to the fold, photo from the window edge to col 8 */
+  @media (min-width: 1024px) {
+    .hero__grid {
+      grid-template-columns: minmax(calc(var(--pad) - var(--gap)), 1fr) repeat(12, minmax(0, var(--col))) minmax(calc(var(--pad) - var(--gap)), 1fr);
+      grid-template-rows: auto minmax(13rem, 1fr);
+      column-gap: var(--gap);
+      block-size: clamp(38rem, calc(100svh - var(--header-h)), 56rem);
+    }
+    .hero__text { grid-column: 2 / 10; grid-row: 1; padding: clamp(2rem, 6svh, 4.5rem) 0 var(--s-6); align-content: start; }
+    .hero__lead { margin-top: var(--s-3); }
+    .hero__lead-more { display: inline; }
+    .hero__photo { grid-column: 1 / 10; grid-row: 2; aspect-ratio: auto; min-height: 0; }
+    .hero__photo picture { position: absolute; inset: 0; }
+    .hero__photo img { object-position: 45% 12%; }
+    .hero__panel {
+      grid-column: 10 / 15; grid-row: 1 / 3; grid-template-columns: minmax(0, 1fr);
+      align-content: space-between; padding: var(--s-6) var(--pad) var(--s-6) var(--s-6);
+    }
+    .hero__phone { font-size: clamp(1.375rem, 0.55rem + 1.35vw, 1.75rem); }
+    .hours { flex-direction: column; }
+    .hero__pain { font-size: 1.375rem; }
+    .hero__address { display: block; }
+  }
+  @media (min-width: 1280px) {
+    .hero__text { grid-column: 2 / 10; }
+    .hero__panel { grid-column: 11 / 15; }
+    .hero__photo { grid-column: 1 / 10; }
+  }
+
+  /* Effect 1: the slats open over the reception photo (the image is painted underneath, LCP not delayed) */
+  .slats { display: none; }
+  :global(.js) .slats { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); pointer-events: none; }
+  :global(.js) .slats span { background: var(--color-bg); transform-origin: 50% 0; transform: scaleY(1); }
+  :global(.js) .slats span:nth-child(n + 4) { display: none; }
+  @media (min-width: 1024px) {
+    :global(.js) .slats { grid-template-columns: repeat(6, 1fr); }
+    :global(.js) .slats span:nth-child(n + 4) { display: block; }
+  }
+  :global(.js) .hero__photo.is-open .slats span {
+    transform: scaleY(0);
+    transition: transform 700ms cubic-bezier(.2, .7, .2, 1) calc(var(--i) * 60ms);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .slats { display: none; }
+  }
+</style>

@@ -1,0 +1,25 @@
+---
+// Phone-only bottom bar «Подзвонити / Маршрут» (concept §8.2, effect 4). Shown after #hero leaves the view, hidden when #contacts enters.
+import Icon from "./Icon.astro";
+import { clinic } from "../data/clinic";
+---
+<div class="callbar on-oak" data-callbar data-rec="U-R004">
+  <a class="btn btn--ink callbar__call" href={clinic.phoneHref}><Icon name="phone" />Подзвонити</a>
+  <a class="callbar__route" href={clinic.mapUrl} target="_blank" rel="noopener"><Icon name="pin" />Маршрут</a>
+</div>
+
+<style>
+  .callbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-2);
+    padding: var(--s-2) var(--pad) calc(var(--s-2) + env(safe-area-inset-bottom));
+    transition: transform 280ms var(--ease-out), visibility 0s linear 0s;
+  }
+  .callbar__route {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); min-height: var(--btn-h);
+    font-weight: 600; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .25em;
+  }
+  .callbar svg, .callbar :global(svg) { width: 1.125rem; height: 1.125rem; }
+  @media (min-width: 768px) { .callbar { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .callbar { transition: none; } }
+</style>

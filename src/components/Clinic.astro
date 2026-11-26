@@ -1,0 +1,56 @@
+---
+import { Picture } from "astro:assets";
+import FutureLink from "./FutureLink.astro";
+import { clinic, NOTE } from "../data/clinic";
+import cabinet from "../assets/cabinet.jpg";
+import surgeons from "../assets/surgeons.jpg";
+const instagram = clinic.socials.find((s) => s.name === "Instagram")!;
+---
+<section id="clinic" class="clinic section" data-rec="U-R015">
+  <div class="container clinic__grid">
+    <figure class="clinic__cabinet">
+      <div class="photo clinic__cabinet-photo">
+        <Picture src={cabinet} formats={["avif", "webp"]} widths={[480, 760, 819]} sizes="(min-width: 1024px) 52vw, 100vw" alt="Кабінет клініки: стоматологічна установка з мікроскопом і монітором на тлі білих ламелей" loading="lazy" quality={76} />
+      </div>
+    </figure>
+
+    <div class="clinic__text">
+      <h2>12 років і 2950 прийомів на рік</h2>
+      <p class="clinic__quote">Стоматологія, в якій комфорт пацієнта на першому місці.</p>
+      <p>Мікроскоп в ендодонтії, навігаційні хірургічні шаблони для імплантації, відбілювання системою BEYOND (США), седація закисом азоту для дітей.</p>
+      <ul class="clinic__links">
+        <li><a class="link" href={instagram.href} target="_blank" rel="noopener">Наші роботи в Instagram</a></li>
+        <li><FutureLink note={NOTE}>Про клініку</FutureLink></li>
+        <li><FutureLink note={NOTE}>Роботи до/після</FutureLink></li>
+      </ul>
+    </div>
+
+    <figure class="clinic__surgeons">
+      <div class="photo clinic__surgeons-photo">
+        <Picture src={surgeons} formats={["avif", "webp"]} widths={[400, 768]} sizes="(min-width: 1024px) 30vw, 100vw" alt="Хірурги клініки в стерильних халатах готуються до операції" loading="lazy" quality={76} />
+      </div>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .clinic__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+  .clinic__cabinet-photo { aspect-ratio: 4 / 5; }
+  .clinic__surgeons-photo { aspect-ratio: 3 / 4; }
+  .clinic__text { display: grid; gap: var(--s-4); align-content: start; }
+  .clinic__quote { font: 600 var(--fs-h3)/1.2 var(--font-display); letter-spacing: -0.01em; max-width: 24ch; }
+  .clinic__links { display: grid; gap: var(--s-1); margin-top: var(--s-2); }
+  .clinic__links .link { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: 600; }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .clinic__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .clinic__text { grid-column: 1 / -1; grid-row: 1; }
+  }
+  /* 1024+: cabinet cols 1–7, text and surgeons cols 9–12, surgeons pushed down 128px */
+  @media (min-width: 1024px) {
+    .clinic__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); row-gap: var(--s-7); }
+    .clinic__cabinet { grid-column: 1 / 8; grid-row: 1 / span 2; }
+    .clinic__text { grid-column: 9 / -1; grid-row: 1; }
+    .clinic__surgeons { grid-column: 9 / -1; grid-row: 2; align-self: end; transform: none; }
+  }
+</style>

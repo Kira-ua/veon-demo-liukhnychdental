@@ -1,0 +1,92 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import logoInk from "../assets/logo-ink.png";
+import { clinic, nav } from "../data/clinic";
+---
+<header class="site-header">
+  <div class="site-header__bar container">
+    <a class="site-header__logo" href="#top" aria-label="LIUKHNYCH dental clinic, на початок сторінки">
+      <Image src={logoInk} alt="" width={154} densities={[1, 2]} format="webp" loading="eager" class="site-header__logo-img" />
+    </a>
+    <nav class="site-header__nav" aria-label="Розділи сторінки">
+      <ul>
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+    <a class="site-header__phone num" href={clinic.phoneHref}>{clinic.phoneDisplay}</a>
+    <a class="btn btn--oak btn--sm site-header__call" href={clinic.phoneHref} data-rec="U-R004">
+      <Icon name="phone" />Подзвонити
+    </a>
+    <button class="site-header__burger" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-open>
+      <Icon name="menu" /><span class="visually-hidden">Меню</span>
+    </button>
+  </div>
+
+  <div class="menu" id="site-menu" role="dialog" aria-modal="true" aria-label="Меню" hidden>
+    <div class="menu__top container">
+      <span class="menu__title">Меню</span>
+      <button class="site-header__burger" type="button" data-menu-close>
+        <Icon name="close" /><span class="visually-hidden">Закрити меню</span>
+      </button>
+    </div>
+    <div class="menu__body container">
+      <ul class="menu__links">
+        {nav.map((n) => <li><a href={n.href} data-menu-link>{n.label}</a></li>)}
+      </ul>
+      <div class="menu__contact">
+        <a class="menu__phone num" href={clinic.phoneHref}>{clinic.phoneDisplay}</a>
+        <a class="route" href={clinic.mapUrl} target="_blank" rel="noopener"><Icon name="pin" />Маршрут до клініки</a>
+        <ul class="menu__socials">
+          {clinic.socials.map((s) => <li><a class="link" href={s.href} target="_blank" rel="noopener">{s.name}</a></li>)}
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: var(--color-bg); border-bottom: 1px solid var(--color-line); }
+  .site-header__bar { display: flex; align-items: center; gap: var(--s-2); height: var(--header-h); }
+  .site-header__logo { display: inline-flex; margin-right: auto; padding-block: var(--s-1); }
+  .site-header__logo-img { height: clamp(1.625rem, 10vw - 0.375rem, 2.25rem); width: auto; }
+  .site-header__nav, .site-header__phone { display: none; }
+  .site-header__call { padding-inline: var(--s-3); }
+  .site-header__burger {
+    display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; flex: none;
+    border: 0; background: transparent; color: var(--color-text); cursor: pointer; border-radius: var(--radius);
+    transition: background-color var(--dur-micro) var(--ease-out);
+  }
+  .site-header__burger:hover { background: var(--color-surface); }
+  .site-header__burger :global(svg) { width: 1.5rem; height: 1.5rem; }
+
+  @media (min-width: 400px) { .site-header__bar { gap: var(--s-3); } .site-header__call { padding-inline: var(--s-4); } }
+
+  @media (min-width: 1200px) {
+    .site-header__bar { gap: var(--s-5); }
+    .site-header__nav { display: block; margin-right: auto; }
+    .site-header__logo { margin-right: var(--s-4); }
+    .site-header__nav ul { display: flex; gap: var(--s-5); }
+    .site-header__nav a, .site-header__phone {
+      display: inline-flex; align-items: center; min-height: 2.75rem; font-size: var(--fs-small); font-weight: 500;
+      text-decoration: none; white-space: nowrap; background-image: linear-gradient(currentColor, currentColor);
+      background-size: 0 1px; background-repeat: no-repeat; background-position: 0 calc(50% + .8em);
+      transition: background-size var(--dur-short) var(--ease-out);
+    }
+    .site-header__nav a:hover, .site-header__phone:hover { background-size: 100% 1px; }
+    .site-header__phone { display: inline-flex; font-size: 1.0625rem; font-weight: 600; }
+    .site-header__burger:not([data-menu-close]) { display: none; }
+  }
+
+  /* Mobile menu: full-screen paper panel */
+  .menu { position: fixed; inset: 0; z-index: 60; background: var(--color-bg); overflow-y: auto; }
+  .menu[hidden] { display: none; }
+  .menu__top { display: flex; align-items: center; justify-content: space-between; height: var(--header-h); border-bottom: 1px solid var(--color-line); }
+  .menu__title { font-size: var(--fs-small); color: var(--color-text-muted); }
+  .menu__body { display: grid; gap: var(--s-7); padding-block: var(--s-6) var(--s-8); }
+  .menu__links a { display: flex; align-items: center; min-height: 3.5rem; font: 600 1.75rem/1.1 var(--font-display); text-decoration: none; border-bottom: 1px solid var(--color-line); }
+  .menu__contact { display: grid; gap: var(--s-3); justify-items: start; }
+  .menu__phone { font-size: 1.5rem; font-weight: 600; text-decoration: none; min-height: 2.75rem; display: inline-flex; align-items: center; }
+  .menu__socials { display: flex; flex-wrap: wrap; gap: var(--s-5); }
+  .menu__socials a { display: inline-flex; min-height: 2.75rem; align-items: center; }
+</style>

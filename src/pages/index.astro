@@ -1,0 +1,67 @@
+---
+import { getImage } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Services from "../components/Services.astro";
+import Doctors from "../components/Doctors.astro";
+import FirstVisit from "../components/FirstVisit.astro";
+import Clinic from "../components/Clinic.astro";
+import Contacts from "../components/Contacts.astro";
+import Footer from "../components/Footer.astro";
+import CallBar from "../components/CallBar.astro";
+import wide from "../assets/reception-wide.jpg";
+import { clinic } from "../data/clinic";
+
+const title = "Стоматологія в Івано-Франківську — LIUKHNYCH dental clinic";
+const description =
+  "Стоматологія повного циклу на вул. Юліана Целевича, 4: імплантація від 20 800 грн, лікування каналів під мікроскопом, дитяча стоматологія. +38 099 378 83 99";
+
+// Same parameters as in Hero.astro, so the preload hits the same files (desktop only: on phones the LCP is the H1).
+const wideSet = await Promise.all([640, 960, 1440, 1920].map((w) => getImage({ src: wide, width: w, format: "webp", quality: 78 })));
+const preloadSrcset = wideSet.map((i) => `${i.src} ${i.attributes.width}w`).join(", ");
+
+const base = Astro.site;
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Dentist",
+  name: clinic.name,
+  telephone: clinic.phoneE164,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: clinic.street,
+    addressLocality: clinic.city,
+    addressCountry: "UA",
+  },
+  openingHoursSpecification: [
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "19:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "09:00", closes: "15:00" },
+  ],
+  hasMap: clinic.mapUrl,
+  sameAs: clinic.socials.map((s) => s.href),
+  ...(base ? { url: new URL("/", base).href, image: new URL(wideSet[2]!.src, base).href } : {}),
+};
+---
+<Base lang="uk" title={title} description={description}>
+  <Fragment slot="head">
+    <link rel="preload" as="image" type="image/webp" imagesrcset={preloadSrcset} imagesizes="(min-width: 1440px) 1000px, 70vw" media="(min-width: 1024px)" fetchpriority="high" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+  <Header slot="header" />
+  <Hero />
+  <Services />
+  <Doctors />
+  <FirstVisit />
+  <Clinic />
+  <Contacts />
+  <Fragment slot="footer">
+    <Footer />
+    <CallBar />
+  </Fragment>
+</Base>
+
+<style is:global>
+  @media (max-width: 767px) {
+    footer.footer { padding-bottom: calc(var(--s-6) + var(--btn-h) + var(--s-4) + env(safe-area-inset-bottom)); }
+  }
+</style>

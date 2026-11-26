@@ -1,0 +1,116 @@
+---
+import FutureLink from "./FutureLink.astro";
+import { services, doctors, price, NOTE } from "../data/clinic";
+const doctorName = (id: string) => doctors.find((d) => d.id === id)?.name ?? "";
+---
+<section id="services" class="services section" data-rec="U-R002,U-R005">
+  <div class="container">
+    <div class="services__head">
+      <h2>Що вас турбує і скільки це коштує</h2>
+      <p class="lead muted">Ціни «від» з прайсу клініки. Точну вартість лікар назве після огляду й плану лікування.</p>
+    </div>
+
+    <div class="wall" data-accordion>
+      {services.map((s, i) => (
+        <article class="slat" id={s.id} data-reveal style={`--reveal-delay:${i * 60}ms`}>
+          <h3 class="slat__title" data-slat-title>{s.situation}</h3>
+          <div class="slat__about" data-slat-more>
+            <p class="small muted">{s.direction}</p>
+            <p class="small slat__fact">{s.fact}</p>
+          </div>
+          <p class="slat__price">
+            <span class="slat__price-label small">{s.first.label}<span class="slat__from-desk">, від</span></span>
+            <span class="slat__price-num num"><span class="slat__from-mob">від </span>{price(s.first.amount)}</span>
+          </p>
+          <ul class="slat__more small" data-slat-more>
+            {s.more.map((m) => <li>{m.label} — від&nbsp;<span class="num">{price(m.amount)}</span></li>)}
+          </ul>
+          <p class="slat__doctor small" data-slat-more>
+            {s.doctors.length > 0 && (
+              <>{s.doctors.length > 1 ? "Лікарі" : "Лікар"}: {s.doctors.map((d, j) => <>{j > 0 && ", "}<a class="link" href={`#${d}`}>{doctorName(d)}</a></>)}</>
+            )}
+          </p>
+          <div class="slat__link" data-slat-more>
+            <FutureLink note={NOTE}>Детальніше</FutureLink>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p class="services__all"><FutureLink note={NOTE}>Усі послуги та ціни</FutureLink></p>
+  </div>
+</section>
+
+<style>
+  .services { background: var(--color-surface); }
+  .services__head { display: grid; gap: var(--s-3); margin-bottom: var(--s-6); max-width: 46rem; }
+
+  /* Phone: horizontal rows (closed: situation + first price), the rest opens on tap */
+  .wall { display: grid; gap: 4px; }
+  .slat {
+    position: relative; display: grid; grid-template-columns: minmax(0, 1fr); row-gap: var(--s-2);
+    align-items: start; background: var(--color-bg); padding: var(--s-4) var(--s-4); min-height: 4.5rem;
+  }
+  .slat__title { grid-row: 1; grid-column: 1 / -1; }
+  .slat__price { grid-row: 2; grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--s-3); }
+  .slat > :not(.slat__title):not(.slat__price) { grid-column: 1 / -1; }
+  .slat__price-label { order: 2; color: var(--color-text-muted); line-height: 1.25; }
+  .slat__from-desk { display: none; }
+  .slat__from-mob { font: 500 var(--fs-small)/1 var(--font-body); }
+  .slat__doctor:empty { display: none; }
+  .slat__price-num { font-size: 1.25rem; font-weight: 600; line-height: 1.1; white-space: nowrap; display: inline-block; transition: transform var(--dur-short) var(--ease-out); }
+  .slat__about { display: grid; gap: var(--s-1); }
+  .slat__more { display: grid; gap: var(--s-1); }
+  .slat__more:empty { display: none; }
+  .slat__more li .num { font-family: var(--font-body); font-weight: 600; }
+  .slat__doctor a { white-space: nowrap; }
+
+  /* Title line (effect 3) */
+  .slat__title { position: relative; padding-bottom: var(--s-2); }
+  .slat__title::after { content: ""; position: absolute; left: 0; bottom: 0; width: 2.5rem; height: 2px; background: var(--color-text); transform: scaleX(0); transform-origin: 0 50%; transition: transform var(--dur-short) var(--ease-out); }
+
+  /* Accordion toggle, built by script on phones (src/scripts/site.ts) */
+  .slat :global(.slat__toggle) {
+    all: unset; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); width: 100%; text-align: left; min-height: 2.75rem;
+  }
+  .slat :global(.slat__toggle)::after { content: ""; position: absolute; inset: 0; }
+  .slat :global(.slat__toggle:focus-visible) { outline: none; }
+  .slat:has(:global(.slat__toggle:focus-visible)) { outline: var(--ring) solid var(--color-accent); outline-offset: -3px; }
+  .slat :global(.slat__chev) { width: .65rem; height: .65rem; flex: none; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-25%) rotate(45deg); transition: transform var(--dur-short) var(--ease-out); }
+  .slat :global(.slat__toggle[aria-expanded="true"] .slat__chev) { transform: translateY(25%) rotate(-135deg); }
+  .slat [data-slat-more]:not([hidden]) { animation: slat-open 200ms var(--ease-out); }
+  .slat__link, .slat__doctor { position: relative; z-index: 1; }
+  @keyframes slat-open { from { opacity: 0; } to { opacity: 1; } }
+
+  .services__all { margin-top: var(--s-5); }
+
+  /* 768+: a wall of vertical slats (2 × 3 → 3 × 2 → 6), first prices on one line via subgrid */
+  @media (min-width: 768px) {
+    .wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .slat {
+      grid-row: span 6; grid-template-rows: subgrid; grid-template-columns: minmax(0, 1fr);
+      align-items: start; row-gap: var(--s-3); padding: var(--s-5);
+    }
+    .slat__title, .slat__price, .slat > :not(.slat__title):not(.slat__price) { grid-column: 1; grid-row: auto; }
+    .slat__about { align-self: start; padding-bottom: var(--s-6); }
+    .slat__price { display: grid; justify-items: start; text-align: left; align-self: end; }
+    .slat__price-label { order: 0; }
+    .slat__from-desk { display: inline; }
+    .slat__from-mob { display: none; }
+    .slat__doctor:empty, .slat__more:empty { display: block; }
+    .slat__price-num { font-size: var(--fs-h3); }
+    .slat__link { align-self: end; }
+    .slat:hover .slat__price-num, .slat:focus-within .slat__price-num { transform: translateY(-4px); }
+    .slat:hover .slat__title::after, .slat:focus-within .slat__title::after { transform: scaleX(1); }
+  }
+  @media (min-width: 1024px) { .wall { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 1280px) {
+    .wall { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .slat { padding: var(--s-5) var(--s-4); }
+    .slat__about { min-height: 12rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .slat [data-slat-more]:not([hidden]) { animation: none; }
+    .slat:hover .slat__price-num, .slat:focus-within .slat__price-num { transform: none; }
+  }
+</style>

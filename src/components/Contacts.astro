@@ -1,0 +1,59 @@
+---
+import Icon from "./Icon.astro";
+import { clinic } from "../data/clinic";
+const [a, b, ...rest] = clinic.phoneDisplay.split(" ");
+---
+<section id="contacts" class="contacts section on-oak" data-rec="U-R004,S-R011">
+  <div class="container contacts__grid">
+    <h2 class="contacts__title">Як нас знайти</h2>
+    <a class="contacts__phone num" href={clinic.phoneHref} aria-label={`Подзвонити: ${clinic.phoneDisplay}`}>
+      <span>{a}&nbsp;{b}</span> <span>{rest.join(" ")}</span>
+    </a>
+    <div class="contacts__actions">
+      <a class="btn btn--ink" href={clinic.phoneHref}><Icon name="phone" />Подзвонити</a>
+      <a class="route" href={clinic.mapUrl} target="_blank" rel="noopener"><Icon name="pin" />Маршрут до клініки</a>
+    </div>
+    <div class="contacts__col">
+      <h3 class="contacts__label">Адреса</h3>
+      <p>{clinic.street},<br />м.&nbsp;{clinic.city}</p>
+    </div>
+    <div class="contacts__col">
+      <h3 class="contacts__label">Години роботи</h3>
+      <dl class="contacts__hours">
+        {clinic.hours.map((h) => <div><dt>{h.days}</dt><dd>{h.time}</dd></div>)}
+      </dl>
+    </div>
+    <div class="contacts__col">
+      <h3 class="contacts__label">Соцмережі</h3>
+      <ul class="contacts__socials">
+        {clinic.socials.map((s) => <li><a class="link" href={s.href} target="_blank" rel="noopener">{s.name}</a></li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contacts__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .contacts__phone {
+    display: inline-flex; flex-wrap: wrap; column-gap: .28em; justify-self: start;
+    font-size: clamp(2.5rem, 0.9rem + 8.2vw, 6rem); font-weight: 500; line-height: 1; letter-spacing: -0.03em; text-decoration: none;
+  }
+  .contacts__phone span { white-space: nowrap; }
+  .contacts__phone:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: .12em; }
+  .contacts__actions { display: grid; gap: var(--s-2); justify-items: stretch; }
+  .contacts__actions .route { justify-self: start; }
+  .contacts__label { font: 600 var(--fs-small)/1.4 var(--font-body); letter-spacing: 0; margin-bottom: var(--s-2); }
+  .contacts__hours div { display: flex; gap: var(--s-3); }
+  .contacts__hours dt { min-width: 3.5rem; }
+  .contacts__socials { display: flex; flex-wrap: wrap; column-gap: var(--s-5); }
+  .contacts__socials a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: 600; }
+  .contacts__col { padding-top: var(--s-4); border-top: 1px solid var(--color-ink-line); }
+
+  @media (min-width: 768px) {
+    .contacts__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--gap); }
+    .contacts__title, .contacts__phone, .contacts__actions { grid-column: 1 / -1; }
+    .contacts__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-5); margin-bottom: var(--s-6); }
+    .contacts__phone { flex-wrap: nowrap; }
+  }
+  @media (min-width: 768px) and (max-width: 1023px) { .contacts__phone { font-size: clamp(2.5rem, 7vw, 4rem); } }
+</style>

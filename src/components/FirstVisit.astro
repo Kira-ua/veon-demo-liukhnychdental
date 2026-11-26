@@ -1,0 +1,36 @@
+---
+import Icon from "./Icon.astro";
+import { clinic, price } from "../data/clinic";
+---
+<section id="first-visit" class="visit section on-dark" data-rec="U-R013">
+  <div class="container visit__grid">
+    <p class="visit__figure">
+      <span class="visit__from">від</span>
+      <span class="visit__num num">{price("500")}</span>
+      <span class="visit__caption">розгорнута консультація з планом лікування</span>
+    </p>
+    <div class="visit__text">
+      <h2>Перший візит: консультація з планом лікування</h2>
+      <p>Перед початком лікування лікар проводить детальну консультацію і пояснює можливі варіанти вирішення ситуації.</p>
+      <p>План лікування формуємо індивідуально, враховуючи ваші потреби й побажання, і проходимо шлях до результату разом із вами: прозоро, професійно, етично.</p>
+      <a class="btn btn--oak visit__btn" href={clinic.phoneHref} data-rec="U-R004"><Icon name="phone" />Записатися телефоном</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .visit__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+  .visit__figure { display: grid; gap: var(--s-2); }
+  .visit__from { font-size: var(--fs-small); color: var(--color-on-dark-muted); }
+  .visit__num { font-size: var(--fs-hero-num); font-weight: 500; line-height: 1; letter-spacing: -0.02em; white-space: nowrap; }
+  .visit__caption { font-size: var(--fs-small); color: var(--color-on-dark-muted); max-width: 22ch; }
+  .visit__text { display: grid; gap: var(--s-4); max-width: 38rem; }
+  .visit__text p { color: var(--color-on-dark); }
+  .visit__btn { justify-self: stretch; margin-top: var(--s-3); }
+  @media (min-width: 768px) { .visit__btn { justify-self: start; } }
+  @media (min-width: 1024px) {
+    .visit__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: start; }
+    .visit__figure { grid-column: 1 / 6; }
+    .visit__text { grid-column: 7 / -1; }
+  }
+</style>

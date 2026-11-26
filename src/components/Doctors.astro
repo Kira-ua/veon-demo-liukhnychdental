@@ -1,0 +1,81 @@
+---
+import { Image, Picture } from "astro:assets";
+import FutureLink from "./FutureLink.astro";
+import { doctors, services, NOTE } from "../data/clinic";
+import team from "../assets/doctors-team.jpg";
+import roman from "../assets/doctor-roman.jpg";
+import liubomyr from "../assets/doctor-liubomyr.jpg";
+import yurii from "../assets/doctor-yurii.jpg";
+import sofiia from "../assets/doctor-sofiia.jpg";
+import iryna from "../assets/doctor-iryna.jpg";
+
+const photos = { roman, liubomyr, yurii, sofiia, iryna };
+const serviceName = (id: string) => services.find((s) => s.id === id)?.situation ?? "";
+---
+<section id="doctors" class="doctors section" data-rec="U-R003,U-R015">
+  <div class="container doctors__grid">
+    <div class="doctors__head">
+      <h2>П’ятеро лікарів, від 10 до 22 років практики</h2>
+      <p class="lead muted">LIUKHNYCH — прізвище двох лікарів клініки, Любомира і Романа Люхничів.</p>
+    </div>
+
+    <ol class="doctors__list">
+      {doctors.map((d) => (
+        <li class="doc" id={d.id}>
+          <p class="doc__years"><span class="doc__num num">{d.years}</span><span class="small muted">{d.yearsWord}</span></p>
+          <div class="doc__body">
+            <h3 class="doc__name">{d.name}</h3>
+            <p class="small">{d.role}</p>
+            <p class="small doc__dir">
+              Напрям: {d.services.map((s, j) => <>{j > 0 && ", "}<a class="link" href={`#${s}`}>{serviceName(s)}</a></>)}
+            </p>
+          </div>
+          <Image src={photos[d.photo]} alt={`${d.name}, ${d.role.toLowerCase()}`} widths={[120, 240]} sizes="120px" format="webp" quality={76} loading="lazy" class="doc__photo" />
+        </li>
+      ))}
+    </ol>
+
+    <figure class="doctors__team">
+      <div class="photo doctors__team-photo">
+        <Picture src={team} formats={["avif", "webp"]} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 40vw, 100vw" alt="П’ятеро лікарів клініки на рецепції біля дубової панелі з логотипом" loading="lazy" quality={74} />
+      </div>
+      <figcaption class="photo-caption">Лікарі клініки</figcaption>
+    </figure>
+
+    <p class="doctors__all"><FutureLink note={NOTE}>Усі лікарі</FutureLink></p>
+  </div>
+</section>
+
+<style>
+  .doctors__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+  .doctors__head { display: grid; gap: var(--s-3); }
+  .doctors__list { border-top: 1px solid var(--color-line); }
+  .doc {
+    display: grid; grid-template-columns: 4.25rem minmax(0, 1fr) 4.5rem; gap: var(--s-4); align-items: start;
+    padding-block: var(--s-5); border-bottom: 1px solid var(--color-line);
+  }
+  .doc__years { display: grid; line-height: 1.1; }
+  .doc__num { font-size: 2.5rem; font-weight: 500; line-height: 1; letter-spacing: -0.02em; display: inline-block; transition: transform var(--dur-short) var(--ease-out); }
+  .doc__body { display: grid; gap: var(--s-1); }
+  .doc__name { position: relative; padding-bottom: var(--s-2); margin-bottom: var(--s-1); }
+  .doc__name::after { content: ""; position: absolute; left: 0; bottom: 0; width: 2.5rem; height: 2px; background: var(--color-text); transform: scaleX(0); transform-origin: 0 50%; transition: transform var(--dur-short) var(--ease-out); }
+  .doc__dir a { display: inline-block; }
+  .doc__photo { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; background: var(--color-surface); }
+  .doc:hover .doc__num, .doc:focus-within .doc__num { transform: translateY(-4px); }
+  .doc:hover .doc__name::after, .doc:focus-within .doc__name::after { transform: scaleX(1); }
+  .doctors__team-photo { aspect-ratio: 3 / 2; }
+
+  @media (min-width: 768px) {
+    .doc { grid-template-columns: 7.5rem minmax(0, 1fr) 6rem; gap: var(--s-5); }
+    .doc__num { font-size: 3.5rem; }
+  }
+  /* 1024+: team photo cols 1–5 (sticky), heading and records cols 7–12 */
+  @media (min-width: 1024px) {
+    .doctors__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); row-gap: var(--s-6); }
+    .doctors__head, .doctors__list, .doctors__all { grid-column: 7 / -1; }
+    .doctors__team { grid-column: 1 / 6; grid-row: 1 / span 3; align-self: start; position: sticky; top: calc(var(--header-h) + var(--s-6)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .doc:hover .doc__num, .doc:focus-within .doc__num { transform: none; }
+  }
+</style>
